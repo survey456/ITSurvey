@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Satisfaction Survey – Rail-Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #1a3260;
+    --accent: #e8a020;
+    --bg: #f5f7fa;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .survey-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: white; padding: 48px 32px 64px; position: relative; overflow: hidden;
+  }
+  .survey-header::before {
+    content: ''; position: absolute; right: -60px; top: -60px;
+    width: 300px; height: 300px; border-radius: 50%; background: rgba(232,160,32,0.12);
+  }
+  .survey-header::after {
+    content: ''; position: absolute; left: -40px; bottom: -80px;
+    width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04);
+  }
+  .header-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+  .company-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px; padding: 6px 16px; font-size: 13px; font-weight: 500;
+    margin-bottom: 20px; letter-spacing: 0.3px;
+  }
+  .company-badge span { color: var(--accent); }
+  h1 { font-family: 'DM Serif Display', serif; font-size: clamp(28px, 5vw, 40px); line-height: 1.2; margin-bottom: 16px; }
+  .header-desc { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.75); max-width: 520px; }
+  .anon-badge {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 20px;
+    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 100px; padding: 5px 14px; font-size: 13px; color: #6ee7b7;
+  }
+
+  .progress-bar-wrap { background: var(--navy); padding: 0 32px; }
+  .progress-inner { max-width: 680px; margin: 0 auto; }
+  .progress-track { height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.5); padding: 8px 0 16px; }
+
+  .survey-body { max-width: 680px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  .section-group {
+    background: white; border-radius: var(--radius); border: 1px solid var(--border);
+    margin-bottom: 24px; overflow: hidden; animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .section-group:nth-child(1) { animation-delay: 0s; }
+  .section-group:nth-child(2) { animation-delay: 0.05s; }
+  .section-group:nth-child(3) { animation-delay: 0.1s; }
+  .section-group:nth-child(4) { animation-delay: 0.15s; }
+  .section-group:nth-child(5) { animation-delay: 0.2s; }
+  .section-group:nth-child(6) { animation-delay: 0.25s; }
+  .section-group:nth-child(7) { animation-delay: 0.3s; }
+
+  .section-label {
+    background: var(--navy); color: white; font-size: 12px; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase; padding: 10px 20px;
+  }
+
+  .question-block { padding: 22px; border-bottom: 1px solid var(--border); }
+  .question-block:last-child { border-bottom: none; }
+
+  .q-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .q-num {
+    flex-shrink: 0; width: 26px; height: 26px; background: var(--navy); color: white;
+    border-radius: 50%; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  .q-text { font-size: 15px; font-weight: 500; line-height: 1.5; flex: 1; }
+  .q-subtext { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .required { color: var(--accent); margin-left: 3px; }
+
+  .scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; padding: 0 2px; }
+  .scale-buttons { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .scale-btn {
+    appearance: none; border: 2px solid var(--border); border-radius: 8px; background: white;
+    aspect-ratio: 1; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit;
+    color: var(--muted); transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; width: 100%;
+  }
+  .scale-btn:hover { border-color: var(--navy-mid); color: var(--navy); background: #f0f4ff; }
+  .scale-btn.selected { background: var(--navy); border-color: var(--navy); color: white; }
+  .scale-btn.selected.good { background: var(--success); border-color: var(--success); }
+  .scale-btn.selected.mid { background: var(--warning); border-color: var(--warning); }
+  .scale-btn.selected.bad { background: var(--danger); border-color: var(--danger); }
+
+  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .radio-btn {
+    border: 2px solid var(--border); border-radius: 8px; padding: 8px 18px;
+    font-size: 14px; font-weight: 500; cursor: pointer; background: white;
+    color: var(--muted); transition: all 0.15s ease; font-family: inherit;
+  }
+  .radio-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .radio-btn.selected { background: var(--navy); border-color: var(--navy); color: white; }
+
+  .conditional { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .conditional.visible { display: block; }
+
+  .low-score-box {
+    display: none; margin-top: 14px; padding: 14px 16px;
+    background: #fff8f8; border: 1px solid #fecaca; border-radius: 8px;
+  }
+  .low-score-box.visible { display: block; animation: fadeUp 0.2s ease both; }
+  .low-score-box .low-label {
+    font-size: 13px; font-weight: 600; color: var(--danger); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .low-score-box textarea { background: white; border-color: #fecaca; }
+  .low-score-box textarea:focus { border-color: var(--danger); }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .checkbox-item {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px;
+    font-size: 14px; transition: all 0.15s; background: white;
+  }
+  .checkbox-item:hover { border-color: var(--navy-mid); background: #f8faff; }
+  .checkbox-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: white;
+  }
+  .checkbox-item.checked .check-box { background: var(--navy); border-color: var(--navy); }
+  .check-box::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; opacity: 0; transition: opacity 0.15s; }
+  .checkbox-item.checked .check-box::after { opacity: 1; }
+  .checkbox-text { flex: 1; color: var(--text); }
+
+  textarea {
+    width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 12px 14px;
+    font-size: 14px; font-family: inherit; resize: vertical; min-height: 90px;
+    color: var(--text); transition: border-color 0.15s; line-height: 1.6; background: white;
+  }
+  textarea:focus { outline: none; border-color: var(--navy-mid); }
+  textarea::placeholder { color: #b0b8c8; }
+
+  .sub-label { font-size: 13px; font-weight: 600; color: var(--navy-mid); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+  .submit-section { text-align: center; padding-top: 8px; }
+  .submit-btn {
+    background: var(--navy); color: white; border: none; border-radius: 10px;
+    padding: 16px 48px; font-size: 16px; font-weight: 600; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.3px; transition: all 0.2s;
+  }
+  .submit-btn:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(15,31,61,0.25); }
+  .submit-note { margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+  .success-screen { display: none; text-align: center; padding: 64px 32px; background: white; border-radius: var(--radius); border: 1px solid var(--border); }
+  .success-screen.visible { display: block; }
+  .success-icon { width: 72px; height: 72px; background: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+  .success-screen h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 12px; }
+  .success-screen p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+  @media (max-width: 480px) {
+    .scale-buttons { grid-template-columns: repeat(4, 1fr); }
+    .survey-header { padding: 32px 20px 48px; }
+    .question-block { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="survey-header">
+  <div class="header-inner">
+    <div class="company-badge">🚆 <span>Rail-Flow</span> IT Department</div>
+    <h1>IT Satisfaction Survey</h1>
+    <p class="header-desc">Your feedback helps us improve our IT services, tools, and support. This survey takes about <strong>5 minutes</strong> to complete.</p>
+    <div class="anon-badge">🔒 100% Anonymous – no personal data collected</div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label"><span>Progress</span><span id="progressLabel">0 of 13 answered</span></div>
+  </div>
+</div>
+
+<div class="survey-body">
+<form id="surveyForm" onsubmit="handleSubmit(event)">
+
+  <!-- ═══ SECTION 1: GENERAL ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 1 · General</div>
+
+    <!-- Q0: Office -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">0</div>
+        <div>
+          <div class="q-text">Which office are you assigned to?<span class="required">*</span></div>
+        </div>
+      </div>
+      <div class="radio-group">
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q0')">🏢 Frankfurt – HQ</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q0')">🏢 Hamburg</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q0')">🌍 Remote / Home Office</button>
+      </div>
+    </div>
+
+    <!-- Q1: Internal IT -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">1</div>
+        <div>
+          <div class="q-text">How would you rate the internal IT service at Rail-Flow?<span class="required">*</span></div>
+          <div class="q-subtext">Your direct IT colleagues – e.g. setup, access management, day-to-day support.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+      <div class="scale-buttons" id="scale-q1">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q1','low-q1')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q1">
+        <div class="low-label">⚠️ What could be improved with the internal IT service?</div>
+        <textarea placeholder="Please describe what's not working well..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q2: External IT / PalaIT -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">2</div>
+        <div>
+          <div class="q-text">How would you rate the external IT service (PalaIT)?<span class="required">*</span></div>
+          <div class="q-subtext">PalaIT is our external IT partner. Select "No contact" if this doesn't apply to you.</div>
+        </div>
+      </div>
+      <div class="radio-group" style="margin-bottom:10px;">
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q2-contact'); toggleConditional('q2-scale-wrap', true)">I've had contact with PalaIT</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q2-contact'); toggleConditional('q2-scale-wrap', false)">No contact yet – N/A</button>
+      </div>
+      <div class="conditional" id="q2-scale-wrap">
+        <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+        <div class="scale-buttons" id="scale-q2">
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">1</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">2</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">3</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">4</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">5</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">6</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">7</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q2','low-q2')">8</button>
+        </div>
+        <div class="low-score-box" id="low-q2">
+          <div class="low-label">⚠️ What could PalaIT do better?</div>
+          <textarea placeholder="Please describe what wasn't satisfactory..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3: IT Infrastructure familiarity -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">3</div>
+        <div>
+          <div class="q-text">How well-informed do you feel about Rail-Flow's internal IT infrastructure?<span class="required">*</span></div>
+          <div class="q-subtext">e.g. systems landscape, cloud setup, which tools serve which purpose.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Not informed at all</span><span>😍 Fully informed</span></div>
+      <div class="scale-buttons" id="scale-q3">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q3','low-q3')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q3">
+        <div class="low-label">⚠️ What information is missing for you?</div>
+        <textarea placeholder="e.g. I don't know which cloud systems we use, how to access certain resources..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 2: IT HELPDESK ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 2 · IT HelpDesk</div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">4</div>
+        <div>
+          <div class="q-text">Have you used the IT HelpDesk before?<span class="required">*</span></div>
+          <div class="q-subtext">The HelpDesk is the first point of contact for IT issues and requests.</div>
+        </div>
+      </div>
+      <div class="radio-group" style="margin-bottom:10px;">
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q4'); toggleConditional('q4-scale-wrap', true)">Yes</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q4'); toggleConditional('q4-scale-wrap', false)">No, not yet</button>
+      </div>
+      <div class="conditional" id="q4-scale-wrap">
+        <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+        <div class="scale-buttons" id="scale-q4">
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">1</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">2</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">3</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">4</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">5</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">6</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">7</button>
+          <button type="button" class="scale-btn" onclick="selectScale(this,'q4','low-q4')">8</button>
+        </div>
+        <div class="low-score-box" id="low-q4">
+          <div class="low-label">⚠️ What could the HelpDesk do better?</div>
+          <textarea placeholder="e.g. Slow response, unclear instructions, no follow-up..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 3: HARDWARE & DEVICES ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 3 · Hardware & Devices</div>
+
+    <!-- Q5: Hardware overall -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">5</div>
+        <div>
+          <div class="q-text">How satisfied are you with your work hardware overall?<span class="required">*</span></div>
+          <div class="q-subtext">Laptop, phone, monitors, peripherals, accessories, etc.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+      <div class="scale-buttons" id="scale-q5">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q5','low-q5')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q5">
+        <div class="low-label">⚠️ Which hardware are you unsatisfied with?</div>
+        <div style="margin-bottom:10px;">
+          <div class="checkbox-group">
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">💻 Laptop / Desktop PC</div></label>
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">📱 Company Mobile Phone</div></label>
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">🖥 Monitor(s)</div></label>
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">🖱 Mouse / Keyboard</div></label>
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">🎧 Headset / Audio equipment</div></label>
+            <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">🔌 Accessories & Cables</div></label>
+          </div>
+        </div>
+        <textarea placeholder="Any additional details about what's not working well..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q6: Internet speed -->
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">6</div>
+        <div>
+          <div class="q-text">How would you rate the internet speed & stability in your office?<span class="required">*</span></div>
+          <div class="q-subtext">WiFi / LAN reliability, video call quality, VPN performance.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very poor</span><span>😍 Excellent</span></div>
+      <div class="scale-buttons" id="scale-q6">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q6','low-q6')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q6">
+        <div class="low-label">⚠️ What internet issues do you experience?</div>
+        <textarea placeholder="e.g. WiFi drops, VPN is slow, video calls freeze, signal dead zones in the office..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 4: SOFTWARE & TOOLS ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 4 · Software & Tools</div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">7</div>
+        <div>
+          <div class="q-text">How satisfied are you with the software & tools provided?<span class="required">*</span></div>
+          <div class="q-subtext">e.g. Microsoft 365, HubSpot, Confluence, Personio, DATEV, etc.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+      <div class="scale-buttons" id="scale-q7">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q7','low-q7')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q7">
+        <div class="low-label">⚠️ Which tools are causing issues?</div>
+        <textarea placeholder="e.g. HubSpot is slow, Confluence is confusing, missing access to a specific tool..."></textarea>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">7b</div>
+        <div>
+          <div class="q-text">Do you experience recurring small issues or bugs that could be quickly fixed?<span class="required">*</span></div>
+        </div>
+      </div>
+      <div class="radio-group" style="margin-bottom:10px;">
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q7b'); toggleConditional('q7b-cond', true)">Yes, often</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q7b'); toggleConditional('q7b-cond', true)">Sometimes</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q7b'); toggleConditional('q7b-cond', false)">Rarely / Never</button>
+      </div>
+      <div class="conditional" id="q7b-cond">
+        <textarea placeholder="Describe the issue(s) briefly – even small fixes help us a lot..."></textarea>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">7c</div>
+        <div>
+          <div class="q-text">Would you recommend any tools that could improve your daily work?</div>
+          <div class="q-subtext">Optional – share apps or services you think Rail-Flow should consider.</div>
+        </div>
+      </div>
+      <textarea placeholder="e.g. Notion, Loom, Calendly, Grammarly... anything that would help you work better."></textarea>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 5: COMMUNICATION ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 5 · IT Communication</div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">8</div>
+        <div>
+          <div class="q-text">How satisfied are you with IT communication overall?<span class="required">*</span></div>
+          <div class="q-subtext">Announcements, maintenance notices, updates, and general outreach from IT.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very dissatisfied</span><span>😍 Very satisfied</span></div>
+      <div class="scale-buttons" id="scale-q8">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q8','low-q8')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q8">
+        <div class="low-label">⚠️ What's missing in IT communication?</div>
+        <textarea placeholder="e.g. No heads-up before maintenance, unclear who to contact, not enough updates..."></textarea>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">8b</div>
+        <div>
+          <div class="q-text">Do you always know who to contact and where to find IT resources?<span class="required">*</span></div>
+        </div>
+      </div>
+      <div class="radio-group" style="margin-bottom:12px;">
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q8b')">Yes, always</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q8b')">Most of the time</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q8b')">Sometimes unclear</button>
+        <button type="button" class="radio-btn" onclick="selectRadio(this,'q8b')">Often unclear</button>
+      </div>
+      <div class="sub-label">Which channel do you prefer for IT updates?</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">📧 Email</div></label>
+        <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">💬 Microsoft Teams channel</div></label>
+        <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">📝 Confluence (IT Wiki / Knowledge Base)</div></label>
+        <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-box"></div><div class="checkbox-text">🔗 Other</div></label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 6: ONBOARDING ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 6 · Onboarding & Resources</div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">9</div>
+        <div>
+          <div class="q-text">How would you rate your IT onboarding experience?<span class="required">*</span></div>
+          <div class="q-subtext">Think about your first days: account setup, software, access rights, orientation to IT systems.</div>
+        </div>
+      </div>
+      <div class="scale-labels"><span>😞 Very poor</span><span>😍 Excellent</span></div>
+      <div class="scale-buttons" id="scale-q9">
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">1</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">2</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">3</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">4</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">5</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">6</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">7</button>
+        <button type="button" class="scale-btn" onclick="selectScale(this,'q9','low-q9')">8</button>
+      </div>
+      <div class="low-score-box" id="low-q9">
+        <div class="low-label">⚠️ What didn't go well during IT onboarding?</div>
+        <textarea placeholder="e.g. No clear guidance, had to ask many people, access was delayed..."></textarea>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">9b</div>
+        <div>
+          <div class="q-text">Was there anything you wished had been covered during your IT onboarding?</div>
+          <div class="q-subtext">Optional – this helps us improve the experience for future colleagues.</div>
+        </div>
+      </div>
+      <textarea placeholder="e.g. How to use Confluence, which tools are used for what, VPN setup guide, who to contact for which issue..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 7: OPEN FEEDBACK ═══ -->
+  <div class="section-group">
+    <div class="section-label">Section 7 · Open Feedback</div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">10</div>
+        <div>
+          <div class="q-text">What is IT currently doing well?<span class="required">*</span></div>
+          <div class="q-subtext">We love hearing what's working – please be specific if you can.</div>
+        </div>
+      </div>
+      <textarea placeholder="e.g. Quick response times, smooth setup, friendly support..."></textarea>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">11</div>
+        <div>
+          <div class="q-text">What should IT prioritize improving?<span class="required">*</span></div>
+          <div class="q-subtext">Your honest feedback helps us focus on what matters most.</div>
+        </div>
+      </div>
+      <textarea placeholder="e.g. Faster hardware replacement, better documentation, clearer escalation path..."></textarea>
+    </div>
+
+    <div class="question-block">
+      <div class="q-header">
+        <div class="q-num">12</div>
+        <div>
+          <div class="q-text">Any other comments or suggestions?</div>
+          <div class="q-subtext">Optional – share anything else on your mind.</div>
+        </div>
+      </div>
+      <textarea placeholder="Anything else you'd like to share with the IT team..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <button type="submit" class="submit-btn">Submit Survey →</button>
+    <p class="submit-note">🔒 Your response is anonymous and confidential.</p>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Thank you!</h2>
+    <p>Your feedback has been submitted successfully.<br>
+    The Rail-Flow IT team will review all responses and use them<br>to improve our services. We really appreciate your time!</p>
+  </div>
+
+</form>
+</div>
+
+<script>
+  const scaleValues = {};
+  const radioValues = {};
+  const TOTAL_REQUIRED = 13;
+
+  function selectScale(btn, id, lowBoxId) {
+    const container = document.getElementById('scale-' + id);
+    container.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected', 'good', 'mid', 'bad'));
+    btn.classList.add('selected');
+    const val = parseInt(btn.textContent);
+    if (val >= 6) btn.classList.add('good');
+    else if (val >= 4) btn.classList.add('mid');
+    else btn.classList.add('bad');
+    scaleValues[id] = val;
+    if (lowBoxId) {
+      const box = document.getElementById(lowBoxId);
+      if (box) {
+        if (val <= 4) box.classList.add('visible');
+        else box.classList.remove('visible');
+      }
+    }
+    updateProgress();
+  }
+
+  function selectRadio(btn, id) {
+    const group = btn.closest('.radio-group');
+    group.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    radioValues[id] = btn.textContent;
+    updateProgress();
+  }
+
+  function toggleConditional(id, show) {
+    const el = document.getElementById(id);
+    if (show) el.classList.add('visible');
+    else el.classList.remove('visible');
+  }
+
+  function toggleCheck(label) {
+    label.classList.toggle('checked');
+    const cb = label.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+  }
+
+  function updateProgress() {
+    const answered = Object.keys(scaleValues).length + Object.keys(radioValues).length;
+    const capped = Math.min(answered, TOTAL_REQUIRED);
+    const pct = Math.round((capped / TOTAL_REQUIRED) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = capped + ' of ' + TOTAL_REQUIRED + ' answered';
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    document.getElementById('surveyForm').querySelectorAll('.section-group, .submit-section').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.getElementById('successScreen').classList.add('visible');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Submitted ✓';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
