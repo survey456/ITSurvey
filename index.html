@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Welcome to Rail-Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --rf-green:       #1B4332;
+    --rf-green-mid:   #2D6A4F;
+    --rf-green-light: #D8F3DC;
+    --rf-green-btn:   #2D6A4F;
+    --rf-accent:      #52B788;
+    --rf-white:       #ffffff;
+    --rf-offwhite:    #F8F9FA;
+    --rf-gray:        #6C757D;
+    --rf-dark:        #1A1A1A;
+    --rf-border:      #DEE2E6;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family:'Inter',sans-serif;
+    background:var(--rf-white);
+    color:var(--rf-dark);
+    overflow-x:hidden;
+    font-size:16px;
+    line-height:1.6;
+  }
+
+  /* ── NAVBAR ─────────────────────────────────── */
+  .navbar {
+    background:var(--rf-white);
+    border-bottom:1px solid var(--rf-border);
+    padding:0 60px;
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+    box-shadow:0 1px 8px rgba(0,0,0,0.06);
+  }
+  .navbar-logo img {
+    height:36px;
+    display:block;
+  }
+  .navbar-badge {
+    background:var(--rf-green-light);
+    color:var(--rf-green);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:6px 14px;
+    border-radius:100px;
+  }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    background:var(--rf-green);
+    padding:100px 60px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-inner {
+    max-width:1100px;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+  .hero-tag {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.2);
+    color:var(--rf-accent);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:8px 18px;
+    border-radius:100px;
+    margin-bottom:32px;
+  }
+  .hero-tag::before {
+    content:'';
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--rf-accent);
+    animation:blink 2s ease-in-out infinite;
+  }
+  .hero h1 {
+    font-size:clamp(36px,5vw,64px);
+    font-weight:800;
+    color:var(--rf-white);
+    line-height:1.1;
+    margin-bottom:24px;
+    letter-spacing:-1px;
+  }
+  .hero h1 em {
+    font-style:normal;
+    color:var(--rf-accent);
+  }
+  .hero-sub {
+    font-size:18px;
+    color:rgba(255,255,255,0.7);
+    max-width:560px;
+    line-height:1.7;
+    font-weight:400;
+  }
+
+  /* ── PAGE WRAPPER ────────────────────────────── */
+  .page { max-width:1100px; margin:0 auto; padding:80px 60px; }
+
+  /* ── SECTION HEADER ──────────────────────────── */
+  .sec-tag {
+    display:inline-block;
+    color:var(--rf-green-mid);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .sec-title {
+    font-size:clamp(24px,3.5vw,38px);
+    font-weight:800;
+    color:var(--rf-dark);
+    letter-spacing:-0.5px;
+    line-height:1.15;
+    margin-bottom:14px;
+  }
+  .sec-sub {
+    font-size:16px;
+    color:var(--rf-gray);
+    max-width:580px;
+    margin-bottom:48px;
+    line-height:1.7;
+  }
+
+  /* ── DIVIDER ─────────────────────────────────── */
+  .divider { border:none; border-top:1px solid var(--rf-border); margin:72px 0; }
+
+  /* ── ABOUT CARDS ─────────────────────────────── */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .info-card {
+    background:var(--rf-offwhite);
+    border:1px solid var(--rf-border);
+    border-radius:12px;
+    padding:36px;
+    transition:box-shadow 0.2s, transform 0.2s;
+  }
+  .info-card:hover {
+    box-shadow:0 8px 32px rgba(27,67,50,0.1);
+    transform:translateY(-2px);
+  }
+  .info-card .ic-icon {
+    width:48px; height:48px;
+    background:var(--rf-green-light);
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    margin-bottom:20px;
+  }
+  .info-card h3 {
+    font-size:18px;
+    font-weight:700;
+    color:var(--rf-dark);
+    margin-bottom:10px;
+  }
+  .info-card p {
+    font-size:15px;
+    color:var(--rf-gray);
+    line-height:1.7;
+  }
+
+  /* ── PRODUCT CARDS (dark) ────────────────────── */
+  .prod-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .prod-card {
+    background:var(--rf-green);
+    border-radius:12px;
+    padding:40px;
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.2s;
+  }
+  .prod-card:hover { transform:translateY(-3px); }
+  .prod-card::after {
+    content:'';
+    position:absolute; bottom:-50px; right:-50px;
+    width:180px; height:180px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.04);
+  }
+  .prod-tag {
+    display:inline-block;
+    background:rgba(82,183,136,0.2);
+    border:1px solid rgba(82,183,136,0.35);
+    color:var(--rf-accent);
+    font-size:11px; font-weight:700;
+    letter-spacing:1.5px; text-transform:uppercase;
+    padding:5px 14px; border-radius:100px;
+    margin-bottom:20px;
+  }
+  .prod-card h3 {
+    font-size:22px; font-weight:700;
+    color:var(--rf-white); margin-bottom:14px;
+    letter-spacing:-0.3px;
+  }
+  .prod-card p {
+    font-size:15px; line-height:1.7;
+    color:rgba(255,255,255,0.65);
+  }
+
+  /* ── BUTTONS ─────────────────────────────────── */
+  .btn-row { display:flex; gap:14px; flex-wrap:wrap; margin-top:32px; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--rf-green);
+    color:var(--rf-white);
+    text-decoration:none;
+    padding:13px 26px;
+    border-radius:8px;
+    font-size:14px; font-weight:600;
+    transition:background 0.2s, transform 0.15s;
+    letter-spacing:0.2px;
+  }
+  .btn:hover { background:var(--rf-green-mid); transform:translateY(-1px); }
+  .btn.outline {
+    background:transparent;
+    border:1.5px solid var(--rf-green);
+    color:var(--rf-green);
+  }
+  .btn.outline:hover { background:var(--rf-green); color:var(--rf-white); }
+  .btn.accent {
+    background:var(--rf-accent);
+    color:var(--rf-white);
+  }
+  .btn.accent:hover { background:var(--rf-green-mid); }
+
+  /* ── VALUES SECTION ──────────────────────────── */
+  .values-bg {
+    background:var(--rf-green);
+    border-radius:16px;
+    padding:64px;
+    margin:72px 0;
+  }
+  .values-bg .sec-title { color:var(--rf-white); }
+  .values-bg .sec-sub { color:rgba(255,255,255,0.65); }
+  .values-bg .sec-tag { color:var(--rf-accent); }
+
+  .val-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:40px; }
+  .val-card {
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
+    padding:28px 24px;
+    transition:background 0.2s;
+  }
+  .val-card:hover { background:rgba(255,255,255,0.12); }
+  .val-emoji { font-size:26px; margin-bottom:14px; display:block; }
+  .val-card h4 { font-size:15px; font-weight:700; color:var(--rf-white); margin-bottom:8px; }
+  .val-card p { font-size:13.5px; color:rgba(255,255,255,0.6); line-height:1.6; }
+
+  /* ── CULTURE PILLS ───────────────────────────── */
+  .culture-box { margin-top:48px; padding-top:40px; border-top:1px solid rgba(255,255,255,0.12); }
+  .culture-box h3 { font-size:18px; font-weight:700; color:var(--rf-white); margin-bottom:20px; }
+  .pills { display:flex; flex-wrap:wrap; gap:10px; }
+  .pill {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:100px;
+    padding:9px 18px;
+    font-size:14px; color:rgba(255,255,255,0.85); font-weight:500;
+    transition:background 0.2s;
+  }
+  .pill:hover { background:rgba(255,255,255,0.16); }
+
+  /* ── VIDEO SECTION ───────────────────────────── */
+  .vid-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:20px; margin-top:40px; }
+  .vid-card {
+    border-radius:12px; overflow:hidden;
+    border:1px solid var(--rf-border);
+    background:var(--rf-white);
+    text-decoration:none; color:inherit; display:block;
+    transition:box-shadow 0.2s, transform 0.2s;
+  }
+  .vid-card:hover { box-shadow:0 12px 40px rgba(27,67,50,0.12); transform:translateY(-3px); }
+  .vid-thumb { position:relative; width:100%; padding-top:56.25%; background:var(--rf-green); overflow:hidden; }
+  .vid-thumb img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+  .vid-card:hover .vid-thumb img { transform:scale(1.05); }
+  .vid-overlay { position:absolute; inset:0; background:rgba(27,67,50,0.4); display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+  .vid-card:hover .vid-overlay { background:rgba(27,67,50,0.2); }
+  .play-btn {
+    width:52px; height:52px;
+    background:var(--rf-white);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    transition:transform 0.2s;
+  }
+  .vid-card:hover .play-btn { transform:scale(1.1); }
+  .play-btn::after { content:''; width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid var(--rf-green); margin-left:3px; }
+  .vid-badge {
+    position:absolute; top:12px; left:12px; z-index:2;
+    background:var(--rf-green);
+    color:var(--rf-accent);
+    font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    padding:4px 10px; border-radius:6px;
+  }
+  .vid-info { padding:20px; }
+  .vid-info h4 { font-size:15px; font-weight:700; color:var(--rf-dark); margin-bottom:6px; }
+  .vid-card.main .vid-info h4 { font-size:17px; }
+  .vid-info p { font-size:13px; color:var(--rf-gray); line-height:1.5; }
+  .vid-link { display:inline-flex; align-items:center; gap:5px; font-size:13px; font-weight:600; color:var(--rf-green-mid); margin-top:10px; }
+
+  /* ── SUPPORT SECTION ─────────────────────────── */
+  .support-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
+  .sup-card {
+    background:var(--rf-offwhite);
+    border:1px solid var(--rf-border);
+    border-radius:12px;
+    padding:28px;
+    display:flex; align-items:flex-start; gap:18px;
+    transition:box-shadow 0.2s;
+  }
+  .sup-card:hover { box-shadow:0 6px 24px rgba(27,67,50,0.08); }
+  .sup-icon {
+    width:44px; height:44px;
+    background:var(--rf-green);
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0;
+  }
+  .sup-card h4 { font-size:15px; font-weight:700; color:var(--rf-dark); margin-bottom:3px; }
+  .sup-card span { font-size:12px; color:var(--rf-gray); display:block; margin-bottom:6px; }
+  .sup-card a { font-size:14px; font-weight:500; color:var(--rf-green-mid); text-decoration:none; }
+  .sup-card a:hover { text-decoration:underline; }
+
+  /* ── LINKEDIN BOX ────────────────────────────── */
+  .linkedin-box {
+    background:var(--rf-green-light);
+    border:1px solid rgba(27,67,50,0.15);
+    border-radius:12px;
+    padding:36px;
+    margin-bottom:28px;
+  }
+  .linkedin-box h3 { font-size:20px; font-weight:700; color:var(--rf-green); margin-bottom:10px; }
+  .linkedin-box p { font-size:15px; color:var(--rf-gray); line-height:1.7; margin-bottom:20px; }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    background:var(--rf-green);
+    padding:48px 60px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:24px;
+    margin-top:80px;
+  }
+  .footer-logo img { height:32px; filter:brightness(0) invert(1); opacity:0.9; }
+  .footer-tagline { font-size:13px; color:rgba(255,255,255,0.5); margin-top:6px; }
+  .footer-links a { display:block; color:var(--rf-accent); font-size:14px; text-decoration:none; margin-bottom:5px; }
+  .footer-links a:hover { text-decoration:underline; }
+
+  /* ── ANIMATIONS ──────────────────────────────── */
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .anim { opacity:0; transform:translateY(20px); transition:opacity 0.55s ease, transform 0.55s ease; }
+  .anim.in { opacity:1; transform:translateY(0); }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media(max-width:768px){
+    .navbar,.hero,.page,footer{ padding-left:20px; padding-right:20px; }
+    .hero{ padding-top:60px; padding-bottom:60px; }
+    .two-col,.prod-grid,.val-grid,.vid-grid,.support-grid{ grid-template-columns:1fr; }
+    .values-bg{ padding:40px 24px; }
+    footer{ padding:36px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-logo">
+    <img src="data:image/png;base64,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" alt="Rail-Flow" style="height:40px; display:block;"/>
+  </div>
+  <div class="navbar-badge">Pre-Boarding</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Welcome · Pre-Boarding</div>
+    <h1>Welcome to the<br/><em>Rail-Flow</em> Family!</h1>
+    <p class="hero-sub">We're thrilled you're joining us. This page gives you a first glimpse of who we are, what drives us, and what makes Rail-Flow a special place to work — before your official start day.</p>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="page">
+
+  <!-- ABOUT -->
+  <section class="anim">
+    <div class="sec-tag">About Us</div>
+    <h2 class="sec-title">Who We Are</h2>
+    <p class="sec-sub">A fast-growing freight-tech company shaping the future of sustainable logistics — with over 170 team members, 500+ customers, and a clear mission.</p>
+    <div class="two-col">
+      <div class="info-card">
+        <div class="ic-icon">🚂</div>
+        <h3>Our Company</h3>
+        <p>We are a fast-growing freight-tech company with over 170 team members and more than 500 customers. In 2025, Rail-Flow and Simply Deliver joined forces, combining expertise, technology, and international spirit to create even more innovative solutions.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🌍</div>
+        <h3>Our Mission</h3>
+        <p>We simplify access to rail freight and intermodal transport through a neutral digital platform that connects all stakeholders, boosts efficiency, and drives the shift from road to rail — reducing CO₂ emissions and supporting climate goals.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- PRODUCTS -->
+  <section class="anim">
+    <div class="sec-tag">Our Products</div>
+    <h2 class="sec-title">What We Offer</h2>
+    <p class="sec-sub">Two powerful product pillars that serve the entire rail logistics ecosystem.</p>
+    <div class="prod-grid">
+      <div class="prod-card">
+        <div class="prod-tag">Marketplace</div>
+        <h3>Marketplace Solutions</h3>
+        <p>Our marketplace makes it easy for companies to connect with the right logistics partners — bringing together those who need transport capacity with those who provide it, ensuring efficient collaboration and optimal resource use.</p>
+      </div>
+      <div class="prod-card">
+        <div class="prod-tag">SaaS</div>
+        <h3>SaaS Solutions</h3>
+        <p>Our Software as a Service products — including our Transport Management System (TMS) — support the entire logistics process from inquiry and order management to billing, plus collaboration and CRM tools for all stakeholders.</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <a href="https://www.rail-flow.com/" target="_blank" class="btn">Learn more about Rail-Flow →</a>
+      <a href="https://simplydeliver.com/en/" target="_blank" class="btn outline">Learn more about Simply Deliver →</a>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <div class="values-bg anim">
+    <div class="sec-tag">Culture</div>
+    <h2 class="sec-title">Our Values</h2>
+    <p class="sec-sub">These six principles guide every decision we make — with colleagues, customers, and partners.</p>
+    <div class="val-grid">
+      <div class="val-card"><span class="val-emoji">⚡</span><h4>Agility</h4><p>Short iteration cycles, inspect and adapt, decisions at team level — we live agile principles every day.</p></div>
+      <div class="val-card"><span class="val-emoji">🌿</span><h4>Mindfulness</h4><p>We take care of ourselves, colleagues, and customers by respecting individual needs and circumstances.</p></div>
+      <div class="val-card"><span class="val-emoji">💬</span><h4>Openness</h4><p>Open communication and respectful feedback foster teamwork and help us grow together.</p></div>
+      <div class="val-card"><span class="val-emoji">🤝</span><h4>Reliability</h4><p>We deliver as committed, support each other, and communicate proactively when things change.</p></div>
+      <div class="val-card"><span class="val-emoji">🔄</span><h4>Constant Improvement</h4><p>We embrace change to constantly improve and develop ourselves and the company.</p></div>
+      <div class="val-card"><span class="val-emoji">🏅</span><h4>Integrity</h4><p>We believe in trust, honesty, and ethical behavior — in every conversation and decision.</p></div>
+    </div>
+    <div class="culture-box">
+      <h3>Team Structure & Work Culture</h3>
+      <div class="pills">
+        <div class="pill"><span>🏗️</span> Flat hierarchies</div>
+        <div class="pill"><span>🌍</span> Globally distributed</div>
+        <div class="pill"><span>💻</span> Remote</div>
+        <div class="pill"><span>🇬🇧</span> English company language</div>
+        <div class="pill"><span>🤗</span> Regular team meetups</div>
+        <div class="pill"><span>🤖</span> AI-friendly workplace</div>
+        <div class="pill"><span>🎯</span> Team-level decisions</div>
+        <div class="pill"><span>🌱</span> Dynamic & diverse</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEOS -->
+  <section class="anim">
+    <div class="sec-tag">Get to Know Us</div>
+    <h2 class="sec-title">See Rail-Flow in Action</h2>
+    <p class="sec-sub">Watch these videos to get a real feel for our team, culture, and what makes Rail-Flow truly unique. Click any thumbnail to watch on YouTube.</p>
+    <div class="vid-grid">
+      <a class="vid-card main" href="https://www.youtube.com/watch?v=8LqHAL4Kk6E" target="_blank">
+        <div class="vid-thumb">
+          <img src="https://img.youtube.com/vi/8LqHAL4Kk6E/maxresdefault.jpg" alt="Team & Culture" onerror="this.src='https://img.youtube.com/vi/8LqHAL4Kk6E/hqdefault.jpg'"/>
+          <div class="vid-overlay"><div class="play-btn"></div></div>
+          <span class="vid-badge">⭐ Start Here</span>
+        </div>
+        <div class="vid-info">
+          <h4>Team & Culture Video</h4>
+          <p>Discover the Rail-Flow spirit — meet the team, learn our story, and see what drives us every day.</p>
+          <div class="vid-link">Watch on YouTube →</div>
+        </div>
+      </a>
+      <a class="vid-card" href="https://www.youtube.com/watch?v=HpMToaGQu1g" target="_blank">
+        <div class="vid-thumb">
+          <img src="https://img.youtube.com/vi/HpMToaGQu1g/maxresdefault.jpg" alt="Rail-Flow turns 5" onerror="this.src='https://img.youtube.com/vi/HpMToaGQu1g/hqdefault.jpg'"/>
+          <div class="vid-overlay"><div class="play-btn"></div></div>
+          <span class="vid-badge">🎉 Milestone</span>
+        </div>
+        <div class="vid-info">
+          <h4>Rail-Flow Turns 5</h4>
+          <p>See how we celebrated our 5-year anniversary!</p>
+          <div class="vid-link">Watch →</div>
+        </div>
+      </a>
+      <a class="vid-card" href="https://www.youtube.com/watch?v=aAV3LBGCe2Q" target="_blank">
+        <div class="vid-thumb">
+          <img src="https://img.youtube.com/vi/aAV3LBGCe2Q/maxresdefault.jpg" alt="Customer Success Story" onerror="this.src='https://img.youtube.com/vi/aAV3LBGCe2Q/hqdefault.jpg'"/>
+          <div class="vid-overlay"><div class="play-btn"></div></div>
+          <span class="vid-badge">💼 Customer Story</span>
+        </div>
+        <div class="vid-info">
+          <h4>Customer Success Story</h4>
+          <p>Hear directly from a customer about how Rail-Flow supports their business.</p>
+          <div class="vid-link">Watch →</div>
+        </div>
+      </a>
+    </div>
+    <div class="btn-row">
+      <a href="https://www.youtube.com/@rail-flow8289/videos" target="_blank" class="btn">▶ Visit our YouTube Channel</a>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- STAY CONNECTED + SUPPORT -->
+  <section class="anim">
+    <div class="support-grid">
+      <div>
+        <div class="sec-tag">Stay Connected</div>
+        <h2 class="sec-title">Connect &amp; Stay Updated</h2>
+        <p class="sec-sub">Follow us on LinkedIn and reach out to us anytime before your first day.</p>
+
+        <div class="linkedin-box">
+          <h3>🔗 Rail-Flow on LinkedIn</h3>
+          <p>Get the latest company updates, industry news, and team moments. Stay in the loop — even before day one.</p>
+          <a href="https://de.linkedin.com/company/rail-flow" target="_blank" class="btn">Follow us on LinkedIn</a>
+        </div>
+
+        <div class="sec-tag" style="margin-top:32px;">Questions?</div>
+        <p style="font-size:15px;color:var(--rf-gray);line-height:1.7;margin-bottom:18px;margin-top:8px;">This page is just a starting point. Don't hesitate to reach out — we can't wait to meet you!</p>
+        <a href="mailto:hrgermany@rail-flow.com" class="btn outline">✉️ Contact HR</a>
+      </div>
+
+      <div>
+        <div class="sec-tag">Helpdesk</div>
+        <h2 class="sec-title" style="margin-bottom:24px;">We're Here<br/>to Help</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="sup-card">
+            <div class="sup-icon">💻</div>
+            <div>
+              <h4>IT Support</h4>
+              <span>Technical questions, equipment, access & tools</span>
+              <a href="mailto:helpdesk@rail-flow.com">helpdesk@rail-flow.com</a>
+            </div>
+          </div>
+          <div class="sup-card">
+            <div class="sup-icon">🧑‍💼</div>
+            <div>
+              <h4>HR Support</h4>
+              <span>Onboarding, contracts, policies & people topics</span>
+              <a href="mailto:hrgermany@rail-flow.com">hrgermany@rail-flow.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">
+      <img src="data:image/png;base64,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" alt="Rail-Flow" style="height:36px; display:block; filter:brightness(0) invert(1);"/>
+    </div>
+    <div class="footer-tagline">Making rail freight more accessible, efficient & sustainable.</div>
+  </div>
+  <div class="footer-links">
+    <a href="mailto:helpdesk@rail-flow.com">IT: helpdesk@rail-flow.com</a>
+    <a href="mailto:hrgermany@rail-flow.com">HR: hrgermany@rail-flow.com</a>
+    <a href="https://www.rail-flow.com/" target="_blank">rail-flow.com</a>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 100);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.anim').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
